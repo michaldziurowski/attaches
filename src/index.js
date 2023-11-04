@@ -246,7 +246,6 @@ export default class AttachesTool {
     const holder = make('div', this.CSS.baseClass);
 
     this.nodes.wrapper = make('div', this.CSS.wrapper);
-
     if (this.pluginHasData()) {
       this.showFileData();
     } else {

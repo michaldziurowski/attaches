@@ -105,12 +105,29 @@ export default class Uploader {
       }
       // default uploading
     } else {
+      /**
+       * Default uploading
+       */
+      const formData = new FormData();
+
+      formData.append(this.config.field, file);
+
+      if (
+        this.config.additionalRequestData &&
+        Object.keys(this.config.additionalRequestData).length
+      ) {
+        Object.entries(this.config.additionalRequestData).forEach(
+          ([name, value]) => {
+            formData.append(name, value);
+          }
+        );
+      }
+
       upload = ajax
-        .transport({
+        .post({
           url: this.config.endpoint,
-          accept: this.config.types,
-          beforeSend: () => onPreview(),
-          fieldName: this.config.field,
+          data: formData,
+          type: ajax.contentType.JSON,
           headers: this.config.additionalRequestHeaders || {},
         })
         .then((response) => response.body);
