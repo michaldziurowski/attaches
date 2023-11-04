@@ -283,12 +283,69 @@ export default class AttachesTool {
   }
 
   /**
+   * Specify paste substitutes
+   *
+   * @see {@link https://github.com/codex-team/editor.js/blob/master/docs/tools.md#paste-handling}
+   * @returns {{tags: string[], patterns: object<string, RegExp>, files: {extensions: string[], mimeTypes: string[]}}}
+   */
+  static get pasteConfig() {
+    return {
+      /**
+       * Paste HTML into Editor
+       */
+      tags: [],
+
+      /**
+       * Paste URL of file into the Editor
+       */
+      patterns: {},
+
+      /**
+       * Drag n drop file from into the Editor
+       */
+      files: {
+        mimeTypes: ['application/*', 'video/*', 'audio/*'],
+      },
+    };
+  }
+
+  /**
+   * Specify paste handlers
+   *
+   * @public
+   * @see {@link https://github.com/codex-team/editor.js/blob/master/docs/tools.md#paste-handling}
+   * @param {CustomEvent} event - editor.js custom paste event
+   *                              {@link https://github.com/codex-team/editor.js/blob/master/types/tools/paste-events.d.ts}
+   * @returns {void}
+   */
+  async onPaste(event) {
+    switch (event.type) {
+      case 'file': {
+        const file = event.detail.file;
+
+        this.uploader.uploadByFile(file, {
+          onPreview: () => {
+            this.nodes.wrapper.classList.add(
+              this.CSS.wrapperLoading,
+              this.CSS.loader
+            );
+          },
+        });
+        break;
+      }
+    }
+  }
+
+  /**
    * Checks if any of Tool's fields have data
    *
    * @returns {boolean}
    */
   pluginHasData() {
-    return this.data.title !== '' || Object.values(this.data.file).some(item => item !== undefined);
+    return (
+      this.data.title !== '' ||
+      Object.values(this.data.file).some((item) => item !== undefined)
+    );
   }
 
   /**
@@ -297,7 +354,10 @@ export default class AttachesTool {
   enableFileUpload() {
     this.uploader.uploadSelectedFile({
       onPreview: () => {
-        this.nodes.wrapper.classList.add(this.CSS.wrapperLoading, this.CSS.loader);
+        this.nodes.wrapper.classList.add(
+          this.CSS.wrapperLoading,
+          this.CSS.loader
+        );
       },
     });
   }
@@ -334,7 +394,9 @@ export default class AttachesTool {
     /**
      * Trigger onChange function when upload finished
      */
-    this.api.blocks.getBlockByIndex(this.api.blocks.getCurrentBlockIndex()).dispatchChange();
+    this.api.blocks
+      .getBlockByIndex(this.api.blocks.getCurrentBlockIndex())
+      .dispatchChange();
   }
 
   /**
@@ -393,7 +455,14 @@ export default class AttachesTool {
    * Removes tool's loader
    */
   removeLoader() {
-    setTimeout(() => this.nodes.wrapper.classList.remove(this.CSS.wrapperLoading, this.CSS.loader), LOADER_TIMEOUT);
+    setTimeout(
+      () =>
+        this.nodes.wrapper.classList.remove(
+          this.CSS.wrapperLoading,
+          this.CSS.loader
+        ),
+      LOADER_TIMEOUT
+    );
   }
 
   /**

@@ -8,6 +8,13 @@
     "build:dev": "webpack --mode development --watch",
     "server": "node ./dev/server.js"
   },
+  "browserslist": "> 0.25%, not dead, not IE 11",
+  "prettier": {
+    "trailingComma": "es5",
+    "tabWidth": 2,
+    "semi": true,
+    "singleQuote": true
+  },
   "keywords": [
     "codex editor",
     "tool",
